@@ -37,6 +37,10 @@ npm run dev
 
 If the backend runs somewhere other than `http://localhost:8000`, set `NEXT_PUBLIC_API_URL` for the frontend.
 
+## Contributing
+
+See [GITHUB_WORKFLOW.md](GITHUB_WORKFLOW.md) for branches, commits and pull requests.
+
 ## API
 
 | Endpoint | Description |
