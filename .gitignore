@@ -1,0 +1,16 @@
+# Datasets stay local; only the folder itself is tracked
+data/*
+!data/.gitkeep
+
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
