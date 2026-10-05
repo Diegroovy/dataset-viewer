@@ -2,7 +2,10 @@
 
 import { useEffect, useRef } from "react";
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+// In dev (`npm run dev`) the API runs separately on :8000. In the built app the
+// backend serves this page itself, so requests go to the same address ("").
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "");
 
 export type Dataset = {
   name: string;
@@ -55,7 +58,7 @@ export type RowsPage = {
 };
 
 async function get<T>(path: string, params: Record<string, string | number | boolean | null | undefined> = {}): Promise<T> {
-  const url = new URL(path, API_URL);
+  const url = new URL(path, API_URL || window.location.origin);
   for (const [k, v] of Object.entries(params)) {
     if (v !== null && v !== undefined && v !== "") url.searchParams.set(k, String(v));
   }

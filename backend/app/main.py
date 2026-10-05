@@ -10,6 +10,7 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from watchfiles import Change, awatch
 
 from . import loader
@@ -120,3 +121,10 @@ async def events(request: Request):
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
+
+
+# App mode: serve the built frontend (build.ps1 -> frontend/out) from this same server.
+# Mounted last so the /api routes above take precedence.
+FRONTEND_DIR = Path(__file__).resolve().parents[2] / "frontend" / "out"
+if FRONTEND_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
