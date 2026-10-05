@@ -11,8 +11,19 @@ import pandas as pd
 DATA_DIR = (Path(__file__).resolve().parents[2] / "data").resolve()
 SUPPORTED = {".csv", ".xlsx"}
 
-# (path, mtime_ns, sheet) -> DataFrame. Old entries for a path are dropped on reload.
+# (path, mtime_ns, sheet) -> DataFrame, least recently used first.
+# Entries for deleted or modified files are dropped, and at most MAX_CACHED are kept.
+MAX_CACHED = 8
 _cache: dict[tuple[str, int, str | None], pd.DataFrame] = {}
+
+
+def _prune_cache() -> None:
+    for key in list(_cache):
+        path = Path(key[0])
+        if not path.exists() or path.stat().st_mtime_ns != key[1]:
+            del _cache[key]
+    while len(_cache) > MAX_CACHED:
+        del _cache[next(iter(_cache))]
 
 
 def is_dataset(path: Path) -> bool:
@@ -91,6 +102,7 @@ def load(name: str, sheet: str | None = None) -> pd.DataFrame:
         sheet = sheets[0] if sheets else None
     key = (str(path), path.stat().st_mtime_ns, sheet if is_excel else None)
     if key in _cache:
+        _cache[key] = _cache.pop(key)  # mark as most recently used
         return _cache[key]
 
     if is_excel:
@@ -100,7 +112,6 @@ def load(name: str, sheet: str | None = None) -> pd.DataFrame:
     df.columns = [str(c) for c in df.columns]
     df = _parse_dates(df)
 
-    for stale in [k for k in _cache if k[0] == key[0] and k[1] != key[1]]:
-        del _cache[stale]
     _cache[key] = df
+    _prune_cache()
     return df
