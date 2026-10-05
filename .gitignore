@@ -15,3 +15,5 @@ __pycache__/
 Thumbs.db
 .vscode/
 GITHUB_WORKFLOW.md
+# App-mode logs (start.vbs)
+logs/

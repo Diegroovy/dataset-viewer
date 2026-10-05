@@ -12,18 +12,38 @@ Excel workbooks with several sheets get a sheet selector. CSV delimiter (`,` `;`
 
 ## Stack
 
-- `backend/` — FastAPI + pandas. Watches `data/` with `watchfiles` and pushes changes to the browser over Server-Sent Events.
+- `backend/` — FastAPI + pandas. Watches `data/` with `watchfiles` and pushes changes to the browser over Server-Sent Events. In app mode it also serves the built frontend (`frontend/out`).
 - `frontend/` — Next.js (React, TypeScript, Tailwind) + Recharts.
 
 ## Run
+
+There are two ways to run it. They use different ports, so both can run at the same time.
+
+### App mode — daily use (http://localhost:8765)
+
+One background process, no windows, no VS Code needed.
+
+```powershell
+.\create-shortcuts.ps1      # once: adds "Dataset Viewer" + "Stop Dataset Viewer" to the desktop
+                            # (add -Startup to also launch it when you log in)
+```
+
+- **Start:** double-click *Dataset Viewer* (or `start.vbs`). It starts the server hidden and opens the browser. If it's already running, it just opens the browser.
+- **Stop:** double-click *Stop Dataset Viewer* (or `stop.vbs`).
+- **Logs:** `logs/app.log`.
+- **After changing code:** run `.\build.ps1` (frontend changes), then stop + start (backend changes).
+
+The first start after a fresh clone runs `build.ps1` automatically.
+
+### Dev mode — while editing code (http://localhost:3000)
+
+Hot reload: save a file and the browser updates instantly.
 
 ```powershell
 .\dev.ps1
 ```
 
-Then open http://localhost:3000. The script creates the Python venv and installs npm packages on first run.
-
-Or run each part separately:
+The script creates the Python venv and installs npm packages on first run. Or run each part separately:
 
 ```powershell
 # backend
