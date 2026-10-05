@@ -1,5 +1,7 @@
 # Dataset Viewer
 
+[![CI](https://github.com/Diegroovy/dataset-viewer/actions/workflows/ci.yml/badge.svg)](https://github.com/Diegroovy/dataset-viewer/actions/workflows/ci.yml)
+
 Drop a `.csv` or `.xlsx` file into `data/` and it appears in the web app automatically — no restart or refresh needed.
 
 For each dataset you get:
@@ -56,6 +58,18 @@ npm run dev
 ```
 
 If the backend runs somewhere other than `http://localhost:8000`, set `NEXT_PUBLIC_API_URL` for the frontend.
+
+## Tests and CI
+
+Backend tests (statistics, file reading, API) live in `backend/tests/`:
+
+```powershell
+cd backend
+.venv\Scripts\python -m pip install -r requirements-dev.txt   # once
+.venv\Scripts\python -m pytest
+```
+
+GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs these tests plus the frontend type check, lint and build on every pull request and every push to `main`.
 
 ## Contributing
 
